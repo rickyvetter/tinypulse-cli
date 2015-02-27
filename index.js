@@ -6,12 +6,9 @@ var token = require("./token");
 
 var argObject = minimist(process.argv.slice(2));
 var argList = argObject._;
-var email = argObject.email || argList[0];
+var email = argObject.email || argObject.e || argList[0];
 var message = argObject.message || argObject.m || argList.slice(1).join(" ");
 var isAnonymous = argObject.anonymous ? 1 : 0 || argObject.a ? 1 : 0;
-
- appDirectory = process.env.HOME + "/.cheers";
- dataPath = appDirectory + "/data.json";
 
 if(argObject.token) {
 	token.update(argObject.token);
