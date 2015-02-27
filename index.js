@@ -9,10 +9,6 @@ var email = argObject.email || argObject.e || argList[0];
 var message = argObject.message || argObject.m || argList.slice(1).join(" ");
 var isAnonymous = argObject.anonymous ? 1 : 0 || argObject.a ? 1 : 0;
 
-
-var appDirectory = process.env.HOME + "/.cheers";
-var dataPath = appDirectory + "/data.json";
-
 if(argObject.token) {
 	token.update(argObject.token);
 }

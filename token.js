@@ -1,6 +1,9 @@
 var fs = require('fs');
 var mkdirp = require("mkdirp");
 
+var appDirectory = process.env.HOME + "/.cheers";
+var dataPath = appDirectory + "/data.json";
+
 module.exports = Token = {
 	update: function(token) {
 		var data = {
