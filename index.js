@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 var fs = require("fs");
 var minimist = require("minimist");
 var sendCheers = require("./cheers");
@@ -11,11 +12,13 @@ var isAnonymous = argObject.anonymous ? 1 : 0 || argObject.a ? 1 : 0;
 
 if(argObject.token) {
 	token.update(argObject.token);
+} 
+else if(argObject.email && argObject.password){
+	token.addFromEmail(argObject.email, argObject.password);
 }
 else {
 	fs.readFile(dataPath, function(err, buf) {
 		var data = JSON.parse(buf.toString());
-
 		sendCheers({
 			token: data.token,
 			email: email,

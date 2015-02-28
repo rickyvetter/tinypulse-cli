@@ -6,6 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "preferGlobal": "true",
+  "bin": {
+    "cheers": "index.js"
+  },
   "author": "Ricky Vetter <rickywvetter@gmail.com>",
   "license": "MIT",
   "dependencies": {
@@ -14,6 +18,7 @@
     "minimist": "^1.1.0",
     "mkdirp": "^0.5.0",
     "read": "^1.0.5",
-    "request": "^2.53.0"
+    "request": "^2.53.0",
+    "zombie": "^2.5.1"
   }
 }
