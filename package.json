@@ -6,6 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rickyvetter/tinypulse-cli.git"
+  },
   "preferGlobal": "true",
   "bin": {
     "cheers": "index.js"
@@ -20,5 +24,6 @@
     "read": "^1.0.5",
     "request": "^2.53.0",
     "zombie": "^2.5.1"
-  }
+  },
+  "engine": "node >= 0.11.13"
 }

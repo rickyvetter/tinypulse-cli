@@ -1,9 +1,14 @@
 var request = require("request");
 var cheerio = require("cheerio");
 var parseEmailData = require("./parseEmailData");
+var fs = require("fs");
 
 var getURI = "https://www.tinypulse.com/user_portal/cheers/new?response_token=";
 var postURI = "https://www.tinypulse.com/user_portal/cheers?response_token=";
+var getCheersReceivedURI = "https://www.tinypulse.com/user_portal/cheers?response_token=";
+var getCheersSentURI = "https://www.tinypulse.com/user_portal/cheers/sent?response_token=";
+appDirectory = process.env.HOME + "/.cheers";
+dataPath = appDirectory + "/data.json";
 
 var autoCompleteEmail = function(email, emailData) {
 	var completedEmail;
@@ -50,30 +55,86 @@ var getEmailData = function(body) {
 	return emailData;
 };
 
-var sendCheers = function(opts) {
-	request(getURI + opts.token, function(err, res, body){
-		if(err) {
-			console.error(err);
-		}
-		else {
-			var cheerioBody = cheerio.load(body);
+module.exports = Cheers = {
+	sendCheers: function(opts) {
+		request(getURI + opts.token, function(err, res, body){
+			if(err) {
+				console.error(err);
+			}
+			else {
+				var cheerioBody = cheerio.load(body);
 
-			var emailData = getEmailData(cheerioBody);
-			var email = autoCompleteEmail(opts.email, emailData);
+				var emailData = getEmailData(cheerioBody);
+				var email = autoCompleteEmail(opts.email, emailData);
 
-			var form = getFormFields(cheerioBody);
-			form["respond[cheers][][receiver_email]"] = email;
-			form["respond[cheers][][anonymous]"] = opts.isAnonymous;
-			form["respond[cheers][][praise]"] = opts.message;
+				var form = getFormFields(cheerioBody);
+				form["respond[cheers][][receiver_email]"] = email;
+				form["respond[cheers][][anonymous]"] = opts.isAnonymous;
+				form["respond[cheers][][praise]"] = opts.message;
 
-			request.post({url: postURI + opts.token, form: form}, function (err, res, body) {
-				console.log(err, body);
-				if(body.indexOf(opts.token) !== -1) {
-					console.log("Success!")
+				request.post({url: postURI + opts.token, form: form}, function (err, res, body) {
+					console.log(err, body);
+					if(body.indexOf(opts.token) !== -1) {
+						console.log("Success!")
+					}
+				});
+			}
+		});
+	},
+
+
+	getReceivedCheers: function() {
+		fs.readFile(dataPath, function(err, buf) {
+		var data = JSON.parse(buf.toString());
+			request(getCheersReceivedURI + data.token, function(err, res, body){
+				if(err) {
+					console.log(err);
 				}
-			});
-		}
-	});
-};
+				else{
+					var $ = cheerio.load(body);
+					var receivedCheers = $(".cheer");
+					receivedCheers.each(function(index, cheer){
+		
+						var $cheer = cheerio.load($(cheer).html());
+						var topText = $cheer(".top-text").text().split("\non");
+						var from = topText[0].slice(5).trim();
+						var dateReceived = topText[1].trim();
+						var cheersComment = $cheer("p").text().split("Reported as abusive")[0].trim();
+						console.log(from + " - " + dateReceived);
+						console.log(cheersComment);
+						console.log();
 
-module.exports = sendCheers;
+					})
+				}
+			})
+		})
+	},
+	getSentCheers: function() {
+		fs.readFile(dataPath, function(err, buf) {
+		var data = JSON.parse(buf.toString());
+			request(getCheersSentURI + data.token, function(err, res, body){
+				if(err) {
+					console.log(err);
+				}
+				else{
+					var $ = cheerio.load(body);
+					var receivedCheers = $(".cheer");
+					receivedCheers.each(function(index, cheer){
+		
+						var $cheer = cheerio.load($(cheer).html());
+						var topText = $cheer(".top-text").text().split("\non");
+						var from = topText[0].slice(4).trim();
+						var dateSent = topText[1].trim();
+	
+						var cheersComment = $cheer("p").text().split("Reported as abusive")[0].trim();
+						console.log(from + " - " + dateSent);
+						console.log(cheersComment);
+						console.log();
+					})
+				}
+			})
+		})
+	}
+}
+
+module.exports = Cheers;
