@@ -18,13 +18,22 @@ else if(argObject.email && argObject.password){
 	token.addFromEmail(argObject.email, argObject.password);
 }
 else if(argObject.received) {
-	cheers.getReceivedCheers();
+
+	fs.readFile(token.dataPath, function(err, buf) {
+		var numResults = argObject.received === true ? "all" : argObject.received
+		var data = JSON.parse(buf.toString());
+		cheers.getCheersPage({page: 1, type: "received", token: data.token, numResults: numResults});
+	});
 }
 else if(argObject.sent) {
-	cheers.getSentCheers();
+	fs.readFile(token.dataPath, function(err, buf) {
+		var numResults = argObject.sent === true ? "all" : argObject.sent
+		var data = JSON.parse(buf.toString());
+		cheers.getCheersPage({page: 1, type: "sent", token: data.token, numResults: numResults});
+	});
 }
 else {
-	fs.readFile(dataPath, function(err, buf) {
+	fs.readFile(token.dataPath, function(err, buf) {
 		var data = JSON.parse(buf.toString());
 		cheers.sendCheers({
 			token: data.token,

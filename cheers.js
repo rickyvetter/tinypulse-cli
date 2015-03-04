@@ -5,10 +5,6 @@ var fs = require("fs");
 
 var getURI = "https://www.tinypulse.com/user_portal/cheers/new?response_token=";
 var postURI = "https://www.tinypulse.com/user_portal/cheers?response_token=";
-var getCheersReceivedURI = "https://www.tinypulse.com/user_portal/cheers?response_token=";
-var getCheersSentURI = "https://www.tinypulse.com/user_portal/cheers/sent?response_token=";
-appDirectory = process.env.HOME + "/.cheers";
-dataPath = appDirectory + "/data.json";
 
 var autoCompleteEmail = function(email, emailData) {
 	var completedEmail;
@@ -83,57 +79,48 @@ module.exports = Cheers = {
 	},
 
 
-	getReceivedCheers: function() {
-		fs.readFile(dataPath, function(err, buf) {
-		var data = JSON.parse(buf.toString());
-			request(getCheersReceivedURI + data.token, function(err, res, body){
-				if(err) {
-					console.log(err);
-				}
-				else{
-					var $ = cheerio.load(body);
-					var receivedCheers = $(".cheer");
-					receivedCheers.each(function(index, cheer){
-		
-						var $cheer = cheerio.load($(cheer).html());
-						var topText = $cheer(".top-text").text().split("\non");
-						var from = topText[0].slice(5).trim();
-						var dateReceived = topText[1].trim();
-						var cheersComment = $cheer("p").text().split("Reported as abusive")[0].trim();
-						console.log(from + " - " + dateReceived);
-						console.log(cheersComment);
-						console.log();
+	getCheersPage: function(opts) {
+		var page = opts.page;
+		var type = opts.type;
+		var token = opts.token;
+		var numResults = opts.numResults ? opts.numResults : "all";
+		var resultsPrinted = 0;
+		var self = this;
+		var cheersURLComponent;
+		var cheersURLComponent = type === "received" ? "more" : "more_sent";
+		var cheersURL = "https://www.tinypulse.com/user_portal/cheers/" + cheersURLComponent + "?page=" + page + "&response_token=" + token;
+		request(cheersURL, function(err, res, body){
+			if(err) {
+				console.log(err);
+			}
+			else{
+				var $ = cheerio.load(body);
+				var myCheers = $(".cheer");
+				myCheers.each(function(index, cheer){
 
-					})
-				}
-			})
+					var $cheer = cheerio.load($(cheer).html());
+					var topText = $cheer(".top-text").text().split("\non");
+					var slice = type === "received" ? 5 : 4
+					var from = topText[0].slice(slice).trim();
+					var dateReceived = topText[1].trim();
+					var cheersComment = $cheer("p").text().split("Reported as abusive")[0].trim();
+					console.log(from + " - " + dateReceived);
+					console.log(cheersComment);
+					console.log();
+					resultsPrinted += 1;
+
+					if(numResults !== "all" && resultsPrinted === numResults){
+						return false;
+					}
+
+				})
+			}
+			if($.html().indexOf('Loading...') > -1 && resultsPrinted < numResults) {
+				self.getCheersPage({page: page+1 , type: type, token: token, numResults: numResults})
+			}
 		})
-	},
-	getSentCheers: function() {
-		fs.readFile(dataPath, function(err, buf) {
-		var data = JSON.parse(buf.toString());
-			request(getCheersSentURI + data.token, function(err, res, body){
-				if(err) {
-					console.log(err);
-				}
-				else{
-					var $ = cheerio.load(body);
-					var receivedCheers = $(".cheer");
-					receivedCheers.each(function(index, cheer){
-		
-						var $cheer = cheerio.load($(cheer).html());
-						var topText = $cheer(".top-text").text().split("\non");
-						var from = topText[0].slice(4).trim();
-						var dateSent = topText[1].trim();
-	
-						var cheersComment = $cheer("p").text().split("Reported as abusive")[0].trim();
-						console.log(from + " - " + dateSent);
-						console.log(cheersComment);
-						console.log();
-					})
-				}
-			})
-		})
+
+
 	}
 }
 
