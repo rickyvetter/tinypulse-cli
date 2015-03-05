@@ -2,17 +2,19 @@ var fs = require('fs');
 var mkdirp = require("mkdirp");
 var Browser = require("zombie");
 
+
 var appDirectory = process.env.HOME + "/.cheers";
-var dataPath = appDirectory + "/data.json";
 
 module.exports = Token = {
+
+	dataPath : appDirectory + "/data.json",
 	update: function(token) {
 		var data = {
 			token: token
 		};
-
+		
 		mkdirp.sync(appDirectory);
-		fs.writeFile(dataPath, JSON.stringify(data), function(err) {
+		fs.writeFile(this.dataPath, JSON.stringify(data), function(err) {
 			if (err) {
 				console.error(err);
 			}
@@ -23,6 +25,7 @@ module.exports = Token = {
 	},
 
 	addFromEmail: function(email, password){
+		var self = this;
 		Browser.visit("http://mail.google.com/mail/h/", { debug: true, runScripts: false },
 		 function (e, browser, status) {
 
@@ -44,7 +47,7 @@ module.exports = Token = {
 										var data = {
 											token: token
 										}
-										fs.writeFile(dataPath, JSON.stringify(data), function(err) {
+										fs.writeFile(self.dataPath, JSON.stringify(data), function(err) {
 											if (err) {
 												console.error(err);
 											}
