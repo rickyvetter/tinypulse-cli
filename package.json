@@ -1,5 +1,5 @@
 {
-  "name": "cheers",
+  "name": "tinypulse",
   "version": "1.0.0",
   "description": "Cheers your peers through a CLI (whenever you think about it)",
   "main": "index.js",
@@ -12,7 +12,7 @@
   },
   "preferGlobal": "true",
   "bin": {
-    "cheers": "index.js"
+    "cheers": "./bin/cheers.js"
   },
   "author": "Ricky Vetter <rickywvetter@gmail.com>",
   "license": "MIT",
