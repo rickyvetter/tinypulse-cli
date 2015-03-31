@@ -29,7 +29,14 @@ else if(argObject.sent) {
 	fs.readFile(token.dataPath, function(err, buf) {
 		var numResults = argObject.sent === true ? "all" : argObject.sent
 		var data = JSON.parse(buf.toString());
-		cheers.getCheersPage({page: 1, type: "sent", token: data.token, numResults: numResults});
+		cheers.getCheersPage({page: 1, type: "sent", token: data.token, numResults: numResults}, function(err, data) {
+			if(err) {
+				console.log("Could not get cheers");
+			}
+			else {
+				console.log(data);
+			}
+		});
 	});
 }
 else {
@@ -40,6 +47,13 @@ else {
 			email: email,
 			message: message,
 			isAnonymous: isAnonymous
+		}, function(err) {
+			if(err) {
+				console.log("Cheers was unsucessful");
+			}
+			else {
+				console.log("Cheers sent!");
+			}
 		});
 	});
 }
