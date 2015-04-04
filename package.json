@@ -1,7 +1,7 @@
 {
   "name": "tinypulse",
   "version": "1.4.2",
-  "description": "Cheers your peers through a CLI (whenever you think about it)",
+  "description": "An unofficial API for tinypulse.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,6 @@
     "type": "git",
     "url": "git://github.com/rickyvetter/tinypulse-cli.git"
   },
-  "preferGlobal": "true",
   "bin": {
     "cheers": "./bin/cheers.js"
   },

@@ -1,6 +1,6 @@
 # tinypulse
 
-Spreading cheer and creating a strong and happy workforce - from the command line.
+An unofficial API for tinypulse.
 
 ## use
 ```javascript
