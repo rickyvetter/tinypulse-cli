@@ -1,7 +1,7 @@
 {
   "name": "tinypulse",
   "version": "1.4.2",
-  "description": "Cheers your peers through a CLI (whenever you think about it)",
+  "description": "An unofficial API for tinypulse.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,11 +10,9 @@
     "type": "git",
     "url": "git://github.com/rickyvetter/tinypulse-cli.git"
   },
-  "preferGlobal": "true",
   "bin": {
     "cheers": "./bin/cheers.js"
   },
-  "author": "Ricky Vetter <rickywvetter@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "ast-query": "^1.0.1",
@@ -25,5 +23,17 @@
     "request": "^2.53.0",
     "zombie": "^2.5.1"
   },
-  "engine": "node >= 0.11.13"
+  "engine": "node >= 0.11.13",
+  "contributors": [
+    {
+      "name": "Ricky Vetter",
+      "email": "rickywvetter@gmail.com",
+      "url": "https://github.com/rickyvetter"
+    },
+    {
+      "name": "Conor Hastings",
+      "email": "hastings.conorm@gmail.com",
+      "url": "https://github.com/conorhastings"
+    }
+  ]
 }
